@@ -17,3 +17,8 @@ spring:
     name: oauth2-server
 server:
   port: 8091
+
+security:
+  jwt:
+    token:
+      secretKey: hoangit3

@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -28,16 +28,19 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
     private final PasswordEncoder passwordEncoder;
     private final DataSource dataSource;
     private final AuthenticationManager authenticationManager;
+    private final TokenStore tokenStore;
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
 
-    @Bean
-    TokenStore jdbcTokenStore() {
-        return new JdbcTokenStore(dataSource);
-    }
+//    @Bean
+//    TokenStore jdbcTokenStore() {
+//        return new JdbcTokenStore(dataSource);
+//    }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.checkTokenAccess("isAuthenticated()").tokenKeyAccess("isAuthenticated()");
     }
+
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -46,8 +49,11 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(jdbcTokenStore());
-        endpoints.authenticationManager(authenticationManager);
+        endpoints
+                .tokenStore(tokenStore)
+                .authenticationManager(authenticationManager)
+                .accessTokenConverter(jwtAccessTokenConverter)
+                .authenticationManager(authenticationManager);;
     }
 
     @Bean
