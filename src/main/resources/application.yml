@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     initialization-mode: always
     username: mber
-    url: jdbc:mariadb://192.168.1.110:82/hoang-demo?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mariadb://123.24.142.93:82/hoang-demo?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
     password: techbro@123
   jpa:
     generate-ddl: true

@@ -16,53 +16,17 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Configuration properties related with JWT token
- */
 @Getter
 @Configuration
 public class JwtConfiguration {
-
-    @Value("${security.jwt.token.secretKey}")
-    private String secretKey;
-
-    @Value("${security.jwt.token.signatureAlgorithm:HMACSHA512}")
-    private String signatureAlgorithm;
-
-
-    /**
-     * The storage mechanism to store the OAuth access token.
-     *
-     * @return {@link TokenStore}
-     */
     @Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
-
-
-    /**
-     * Translates between JWT-encoded token values and default OAuth authentication information.
-     *
-     * @return {@link JwtAccessTokenConverter}
-     */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        return converter;
+        return new JwtAccessTokenConverter();
     }
-
-//    @Bean
-//    public AccessTokenConverter jwtAccessTokenConverter() {
-//        return new JwtAccessTokenConverter();
-//    }
-
-
-    /**
-     * Base implementation for token services using JWT-encoded token values for the access and refresh ones.
-     *
-     * @return {@link DefaultTokenServices}
-     */
     @Bean
     @Primary
     public DefaultTokenServices tokenServices() {
@@ -70,10 +34,5 @@ public class JwtConfiguration {
         defaultTokenServices.setTokenStore(tokenStore());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
-    }
-
-
-    private SignerVerifier buildSigner() {
-        return new MacSigner(signatureAlgorithm, new SecretKeySpec(secretKey.getBytes(), signatureAlgorithm));
     }
 }
